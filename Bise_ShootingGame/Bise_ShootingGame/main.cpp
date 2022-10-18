@@ -33,7 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         sceneMng.Update();      //シーンの更新処理
         sceneMng.Draw();        //シーンの描画処理
-        if (sceneMng.ChangeScene() != nullptr)      //シーンの変更処理
+        if (sceneMng.ChangeScene() == nullptr)      //シーンの変更処理
         {
             DxLib_End();	// DXライブラリ使用の終了処理
             return 0;	// ソフトの終了
