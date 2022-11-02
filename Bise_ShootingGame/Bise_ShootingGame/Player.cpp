@@ -3,8 +3,8 @@
 #include "StraightBullets.h"
 #include "KeyManager.h"
 
-Player::Player(T_Location location) 
-	:CharBase(location,10.f,T_Location{2,2}),score(0),life(1)
+Player::Player(T_Location location)
+	:CharBase(location, 10.f, T_Location{ 2,2 }), score(0), life(1)
 {
 	bullets = new BulletsBase * [30];
 	for (int i = 0; i < 30; i++)
@@ -16,7 +16,24 @@ Player::Player(T_Location location)
 void Player::Update()
 {
 	T_Location newLocation = GetLocation();
-	newLocation.x += 1;
+
+	if (KeyManager::OnKeyPressed(KEY_INPUT_W))
+	{
+		newLocation.y -= speed.y;
+	}
+	if (KeyManager::OnKeyPressed(KEY_INPUT_A))
+	{
+		newLocation.x -= speed.x;
+	}
+	if (KeyManager::OnKeyPressed(KEY_INPUT_S))
+	{
+		newLocation.y += speed.y;
+	}
+	if (KeyManager::OnKeyPressed(KEY_INPUT_D))
+	{
+		newLocation.x += speed.x;
+	}
+
 	SetLocation(newLocation);
 
 	int bulletCount;
@@ -27,14 +44,23 @@ void Player::Update()
 			break;
 		}
 		bullets[bulletCount]->Update();
+
+		//‰æ–ÊŠO‚És‚Á‚½‚ç’e‚ðÁ‚·
+		if (bullets[bulletCount]->isScreenOut())
+		{
+			
+			DeleteBullet(bulletCount);
+			bulletCount--;
+
+		}
 	}
 
-	if ((KeyManager::OnMouseClicked(MOUSE_INPUT_LEFT)))
+	if ((KeyManager::OnMousePressed(MOUSE_INPUT_LEFT)))
 	{
-			if (bulletCount < 30 && bullets[bulletCount] == nullptr)
-			{
-				bullets[bulletCount] = new StraightBullets(GetLocation());
-			}
+		if (bulletCount < 30 && bullets[bulletCount] == nullptr)
+		{
+			bullets[bulletCount] = new StraightBullets(GetLocation());
+		}
 	}
 }
 void Player::Draw()
@@ -50,7 +76,7 @@ void Player::Draw()
 		bullets[bulletCount]->Draw();
 	}
 }
-void Player::Hit()
+void Player::Hit(int damage)
 {
 
 }

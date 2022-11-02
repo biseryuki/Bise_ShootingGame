@@ -10,3 +10,21 @@ BulletsBase** CharBase::GetBullets()
 {
 	return bullets;
 }
+
+void CharBase::DeleteBullet(int bulletNum)
+{
+	delete bullets[bulletNum];
+	bullets[bulletNum] = nullptr;
+
+	//”z—ñ‚ð‘O‚É‹l‚ß‚é
+	for (int i = bulletNum; i < (30 - 1); i++)
+	{
+		if (bullets[i + 1] == nullptr)
+		{
+
+			break;
+		}
+		bullets[i] = bullets[i + 1];
+		bullets[i + 1] = nullptr;
+	}
+}
