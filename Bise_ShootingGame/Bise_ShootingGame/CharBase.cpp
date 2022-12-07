@@ -21,7 +21,6 @@ void CharBase::DeleteBullet(int bulletNum)
 	{
 		if (bullets[i + 1] == nullptr)
 		{
-
 			break;
 		}
 		bullets[i] = bullets[i + 1];

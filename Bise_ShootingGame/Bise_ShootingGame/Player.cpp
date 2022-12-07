@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "StraightBullets.h"
 #include "KeyManager.h"
+#include "Recovery.h"
 
 Player::Player(T_Location location)
 	:CharBase(location, 10.f, T_Location{ 2,2 }), score(0), life(1)
@@ -48,23 +49,31 @@ void Player::Update()
 		//‰æ–ÊŠO‚És‚Á‚½‚ç’e‚ðÁ‚·
 		if (bullets[bulletCount]->isScreenOut())
 		{
-			
 			DeleteBullet(bulletCount);
 			bulletCount--;
 
 		}
 	}
 
-	if ((KeyManager::OnMousePressed(MOUSE_INPUT_LEFT)))
+	if ((KeyManager::OnMouseClicked(MOUSE_INPUT_LEFT)))
 	{
 		if (bulletCount < 30 && bullets[bulletCount] == nullptr)
 		{
-			bullets[bulletCount] = new StraightBullets(GetLocation());
+			bullets[bulletCount] = new StraightBullets(GetLocation(), T_Location{ 0,2 });
 		}
 	}
 }
 void Player::Draw()
 {
+#define _DEBUG_MODE_PLAYER
+#ifdef _DEBUG_MODE_PLAYER
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "life=%d", life);
+	DrawFormatString(10, 30, GetColor(255, 255, 255), "score=%d", score);
+
+
+#endif
+
+
 	DrawCircle(GetLocation().x, GetLocation().y, Getradius(), GetColor(255, 0, 0));
 
 	for (int bulletCount = 0; bulletCount < 30; bulletCount++)
@@ -78,8 +87,32 @@ void Player::Draw()
 }
 void Player::Hit(int damage)
 {
+	if (0 <= damage)
+	{
+		life -= damage;
 
+		if (life <= 0)
+		{
+			life = 0;
+		}
+	}
 }
+
+void Player::Hit(class ItemBase* item)
+{
+	switch (item->GetType())
+	{
+	case E_ITEM_TYPE::Heal:
+	{
+		Recovery* recovery = dynamic_cast<Recovery*>(item);
+		life += recovery->GetVolume();
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 bool Player::LifeCheck()
 {
 	bool ret = (life <= 0);
@@ -88,4 +121,12 @@ bool Player::LifeCheck()
 int Player::GetScore()
 {
 	return score;
+}
+
+void Player::AddScore(int score)
+{
+	if (0 <= score)
+	{
+		this->score += score;
+	}
 }

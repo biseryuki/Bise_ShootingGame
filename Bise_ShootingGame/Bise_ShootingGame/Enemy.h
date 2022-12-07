@@ -7,6 +7,7 @@ class Enemy :
 private:
     int hp;
     int point;
+    int shotNum;
     
 public:
     Enemy(T_Location location);
@@ -17,6 +18,5 @@ public:
     virtual void Hit(int damage) override;
     bool HpCheck();
     int GetPoint();
-
 };
 
